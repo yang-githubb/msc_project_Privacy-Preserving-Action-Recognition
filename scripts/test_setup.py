@@ -24,7 +24,7 @@ def test_config():
     
     # Test directory creation
     config.create_directories()
-    print("✅ Directories created successfully")
+    print("Directories created successfully")
     
     return True
 
@@ -40,13 +40,13 @@ def test_pytorch():
         print(f"GPU device: {torch.cuda.get_device_name(0)}")
         print(f"GPU memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
     else:
-        print("⚠️  CUDA not available - will use CPU")
+        print("CUDA not available - will use CPU")
     
     # Test basic tensor operations
     x = torch.randn(2, 3)
     y = torch.randn(2, 3)
     z = x + y
-    print(f"✅ Basic tensor operations work: {z.shape}")
+    print(f"Basic tensor operations work: {z.shape}")
     
     return True
 
@@ -73,13 +73,13 @@ def test_project_structure():
         if not Path(file_path).exists():
             missing_files.append(file_path)
         else:
-            print(f"✅ {file_path}")
+            print(f"{file_path}")
     
     if missing_files:
-        print(f"❌ Missing files: {missing_files}")
+        print(f"Missing files: {missing_files}")
         return False
     else:
-        print("✅ All required files present")
+        print("All required files present")
         return True
 
 def main():
@@ -98,7 +98,7 @@ def main():
             result = test()
             results.append(result)
         except Exception as e:
-            print(f"❌ Test failed: {e}")
+            print(f"Test failed: {e}")
             results.append(False)
     
     print(f"\n=== Test Summary ===")
@@ -107,10 +107,10 @@ def main():
     print(f"Passed: {passed}/{total}")
     
     if passed == total:
-        print("🎉 All tests passed! Project setup is complete.")
+        print("All tests passed! Project setup is complete.")
         return True
     else:
-        print("⚠️  Some tests failed. Please check the issues above.")
+        print("Some tests failed. Please check the issues above.")
         return False
 
 if __name__ == "__main__":
