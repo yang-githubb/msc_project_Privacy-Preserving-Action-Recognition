@@ -68,3 +68,8 @@ models/*.pt
 *.tmp
 *.temp
 *.log 
+
+logs/
+miniconda3/
+.local_install/
+*.shlogs/
