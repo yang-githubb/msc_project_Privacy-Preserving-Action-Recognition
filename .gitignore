@@ -68,3 +68,9 @@ models/*.pt
 *.tmp
 *.temp
 *.log 
+
+logs/
+miniconda3/
+.local_install/
+*.shlogs/
+models/DensePose_ResNet101_FPN_s1x-e2e.pkl
