@@ -1,36 +1,32 @@
 #!/bin/bash
-#SBATCH --job-name=dp2_all_ucf101
+#SBATCH --job-name=dp2_array
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --time=00:00:30
+#SBATCH --time=8:00:00
 #SBATCH --account=tc067-s2737744
-#SBATCH --output=/work/tc067/tc067/s2737744/logs/dp/all_ucf101_%j.out
-#SBATCH --error=/work/tc067/tc067/s2737744/logs/dp/all_ucf101_%j.err
+#SBATCH --array=0-3
+#SBATCH --output=/work/tc067/tc067/s2737744/logs/dp/array_%A_%a.out
+#SBATCH --error=/work/tc067/tc067/s2737744/logs/dp/array_%A_%a.err
 
-# Fix Conda
 source /work/tc067/tc067/s2737744/miniconda3/etc/profile.d/conda.sh
 conda activate dp2
 
-# Fix cache dirs
 export IOPATH_CACHE=/work/tc067/tc067/s2737744/shared_cache/iopath
 export FVCORE_CACHE=/work/tc067/tc067/s2737744/shared_cache/fvcore
 export XDG_CACHE_HOME=/work/tc067/tc067/s2737744/shared_cache/xdg
 export MPLCONFIGDIR=/work/tc067/tc067/s2737744/shared_cache/mpl
 export PYTHONPATH=/work/tc067/tc067/s2737744/detectron2:$PYTHONPATH
 
-# Set working directory
 cd /work/tc067/tc067/s2737744/deep_privacy2
 
-UCF_DIR="/work/tc067/tc067/s2737744/Dataset/ucf101/UCF-101"
+LIST_FILE="/work/tc067/tc067/s2737744/ucf101_part_$(printf '%02d' $SLURM_ARRAY_TASK_ID)"
 OUTPUT_BASE="/work/tc067/tc067/s2737744/output/ucf101_anonymized"
 CONFIG_PATH="configs/anonymizers/FB_cse.py"
 
 mkdir -p "$OUTPUT_BASE"
 
-echo "Starting batch processing of all UCF-101 videos..."
-
-find "$UCF_DIR" -type f -name "*.avi" | while read -r video; do
+while read -r video; do
     class_dir=$(basename "$(dirname "$video")")
     video_name=$(basename "$video" .avi)
     output_dir="$OUTPUT_BASE/$class_dir"
@@ -39,17 +35,11 @@ find "$UCF_DIR" -type f -name "*.avi" | while read -r video; do
     mkdir -p "$output_dir"
 
     if [[ -f "$output_file" ]]; then
-        echo "Skipping already processed: $output_file"
+        echo "Skipping $output_file"
         continue
     fi
 
-    echo "Processing $video → $output_file"
-    python3 anonymize.py "$CONFIG_PATH" \
-        -i "$video" \
-        --output_path "$output_file"
+    python3 anonymize.py "$CONFIG_PATH" -i "$video" --output_path "$output_file"
+done < "$LIST_FILE"
 
-    echo "Done with $video"
-    echo "------------------------------"
-done
-
-echo "✅ All videos processed!"
+echo "✅ Task $SLURM_ARRAY_TASK_ID done."

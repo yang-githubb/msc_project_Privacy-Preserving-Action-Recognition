@@ -74,3 +74,38 @@ miniconda3/
 .local_install/
 *.shlogs/
 models/DensePose_ResNet101_FPN_s1x-e2e.pkl
+Dataset/kinetics-dataset/
+
+# Ignore large data and output folders
+Dataset/
+frames/
+crops/
+output/
+logs/
+shared_cache/
+.torch/
+models/
+vid2vid/
+yolov5/
+miniconda3/
+
+# Ignore common large file types
+*.mp4
+*.avi
+*.jpg
+*.png
+*.npy
+*.npz
+*.h5
+*.pth
+*.pt
+*.ckpt
+*.tar
+*.zip
+*.rar
+*.7z
+
+# Ignore other generated files
+*.log
+*.tmp
+*.cache
